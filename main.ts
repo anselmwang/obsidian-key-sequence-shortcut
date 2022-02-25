@@ -1,5 +1,39 @@
-import { FuzzySuggestModal, MarkdownView, Plugin } from 'obsidian';
+import { App, FuzzySuggestModal, MarkdownView, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { Command, SuggestModal } from "obsidian";
+
+interface KeySequenceShortcutSettings {
+	kssrc_file_path: string
+}
+
+const DEFAULT_SETTINGS: Partial<KeySequenceShortcutSettings> = {
+	kssrc_file_path: "kssrc.md"
+};
+
+export class KeySequenceShortcutSettingTab extends PluginSettingTab {
+  plugin: KeySequenceShortcutPlugin;
+
+  constructor(app: App, plugin: KeySequenceShortcutPlugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
+
+  display(): void {
+    const { containerEl } = this;
+    containerEl.empty();
+
+    new Setting(containerEl)
+      .setName("Config File")
+      .addText((text) =>
+        text
+          .setPlaceholder("")
+          .setValue(this.plugin.settings.kssrc_file_path)
+          .onChange(async (value) => {
+            this.plugin.settings.kssrc_file_path= value;
+            await this.plugin.saveSettings();
+          })
+      );
+  }
+}
 
 interface KeyItem {
 	key_sequence: string;
@@ -63,11 +97,10 @@ export class InsertCommandIdModel extends FuzzySuggestModal<Command> {
 	}
 }
 
-const PLUGIN_NAME = "obsidian-key-sequence-shortcut"
-const KSSRC_FILE_PATH = ".obsidian.kssrc"
-const DEFAULT_KSSRC_FILE_PATH = `.obsidian/plugins/${PLUGIN_NAME}/.obsidian.kssrc.default`
-
 export default class KeySequenceShortcutPlugin extends Plugin {
+	settings: KeySequenceShortcutSettings;
+	settingTab: KeySequenceShortcutSettingTab;
+
 	readKssInit(kss_config: string) {
 		g_all_key_items = [];
 		kss_config.split("\n").forEach(
@@ -92,14 +125,9 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 	}
 
 	async onload() {
+		await this.loadSettings();
 
-		if (! await this.app.vault.adapter.exists(KSSRC_FILE_PATH)) {
-			this.app.vault.adapter.copy(DEFAULT_KSSRC_FILE_PATH, KSSRC_FILE_PATH);
-		}
-
-		this.app.vault.adapter.read(KSSRC_FILE_PATH).
-			then((lines) => this.readKssInit(lines)).
-			catch(error => { console.log('Error loading kssrc file', KSSRC_FILE_PATH, 'from the vault root', error) });
+		this.load_kssrc_file();
 
 		this.addCommand({
 			id: 'open-key-sequence-palette',
@@ -119,8 +147,24 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 			}
 		});
 
-
+		this.settingTab = new KeySequenceShortcutSettingTab(this.app, this);
+		this.addSettingTab(this.settingTab);
 		console.log("KeySequenceShortcutPlugin load successfully.")
+	}
+
+	private load_kssrc_file() {
+		this.app.vault.adapter.read(this.settings.kssrc_file_path).
+			then((lines) => this.readKssInit(lines)).
+			catch(error => { console.log('Error loading kssrc file', this.settings.kssrc_file_path, 'from the vault root', error); });
+	}
+
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+		this.load_kssrc_file();
 	}
 
 	onunload() {
