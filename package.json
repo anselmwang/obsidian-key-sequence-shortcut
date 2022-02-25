@@ -1,0 +1,25 @@
+{
+	"name": "obsidian-key-sequence-shortcut",
+	"version": "1.0.1",
+	"description": " Execute obsidian commands with short key sequences. For example, 'tp' for 'Toggle Preview' and 'tb' for 'Toggle Sidebar'. Easier to remember.",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"local_deploy": "local_deploy.bat %OBSIDIAN_NOTE_DIR%"
+	},
+	"keywords": [],
+	"author": "Yu Wang",
+	"license": "MIT license",
+	"devDependencies": {
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "^5.2.0",
+		"@typescript-eslint/parser": "^5.2.0",
+		"builtin-modules": "^3.2.0",
+		"esbuild": "0.13.12",
+		"obsidian": "^0.12.17",
+		"tslib": "2.3.1",
+		"typescript": "4.4.4"
+	}
+}
