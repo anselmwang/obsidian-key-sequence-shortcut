@@ -142,11 +142,20 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 		this.addCommand({
 			id: 'insert-command-id',
 			name: 'Insert Command Id',
+			icon: "duplicate-glyph",
 			callback: () => {
 				new InsertCommandIdModel(this.app).open();
 			}
 		});
 
+		this.addCommand({
+			id: 'reload-kssrc',
+			name: 'Reload Key Sequence Shortcut Config File',
+			icon: "play-audio-glyph",
+			callback: () => {
+				this.load_kssrc_file();
+			}
+		});
 		this.settingTab = new KeySequenceShortcutSettingTab(this.app, this);
 		this.addSettingTab(this.settingTab);
 		console.log("KeySequenceShortcutPlugin load successfully.")
