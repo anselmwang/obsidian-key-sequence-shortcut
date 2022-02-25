@@ -18,7 +18,7 @@ export class KeySequenceModal extends SuggestModal<KeyItem> {
 		if (result != null) {
 			this.execute(result);
 			this.close();
-		} 
+		}
 		return g_all_key_items.filter((key_item) =>
 			key_item.key_sequence.startsWith(query)
 		);
@@ -72,11 +72,10 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 		g_all_key_items = [];
 		kss_config.split("\n").forEach(
 			(line: string, index: number) => {
-				line =line.trim();
+				line = line.trim();
 				if (line.length > 0 && line[0] != '#') {
 					const split = line.split(" ");
-					if(split.length != 2)
-					{
+					if (split.length != 2) {
 						console.log(`Skip line ${index} "${line}": Doesn't contain two fields.`)
 						return
 					}
@@ -86,16 +85,15 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 					// 	console.log(`Skip line ${index} "${line}": ${split[1]} is not a valid command id.`);
 					// 	return
 					// }
-					g_all_key_items.push({key_sequence: split[0], command: split[1]});
+					g_all_key_items.push({ key_sequence: split[0], command: split[1] });
 				}
 			}
 		)
 	}
 
 	async onload() {
-		
-		if(! await this.app.vault.adapter.exists(KSSRC_FILE_PATH))
-		{
+
+		if (! await this.app.vault.adapter.exists(KSSRC_FILE_PATH)) {
 			this.app.vault.adapter.copy(DEFAULT_KSSRC_FILE_PATH, KSSRC_FILE_PATH);
 		}
 
@@ -104,30 +102,29 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 			catch(error => { console.log('Error loading kssrc file', KSSRC_FILE_PATH, 'from the vault root', error) });
 
 		this.addCommand({
-		id: 'open-key-sequence-palette',
-		name: 'Open Key Sequence Palette (Menu)',
-		icon: 'any-key',
-		hotkeys: [{ modifiers: ['Ctrl'], key: 'm' }],
-		callback: () => {
-			new KeySequenceModal(this.app).open();
-		}
-	});
+			id: 'open-key-sequence-palette',
+			name: 'Open Key Sequence Palette (Menu)',
+			icon: 'any-key',
+			hotkeys: [{ modifiers: ['Ctrl'], key: 'm' }],
+			callback: () => {
+				new KeySequenceModal(this.app).open();
+			}
+		});
 
-this.addCommand({
-	id: 'insert-command-id',
-	name: 'Insert Command Id',
-	callback: () => {
-		new InsertCommandIdModel(this.app).open();
+		this.addCommand({
+			id: 'insert-command-id',
+			name: 'Insert Command Id',
+			callback: () => {
+				new InsertCommandIdModel(this.app).open();
+			}
+		});
+
+
+		console.log("KeySequenceShortcutPlugin load successfully.")
 	}
-});
 
+	onunload() {
 
-
-console.log("KeySequenceShortcutPlugin load successfully.")
 	}
-
-onunload() {
-
-}
 
 }
