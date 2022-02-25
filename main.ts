@@ -106,7 +106,7 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 		kss_config.split("\n").forEach(
 			(line: string, index: number) => {
 				line = line.trim();
-				if (line.length > 0 && line[0] != '#') {
+				if (line.length > 0 && line[0] != '"') {
 					const split = line.split(" ");
 					if (split.length != 2) {
 						console.log(`Skip line ${index} "${line}": Doesn't contain two fields.`)
@@ -142,6 +142,7 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 		this.addCommand({
 			id: 'insert-command-id',
 			name: 'Insert Command Id',
+			hotkeys: [{ modifiers: ['Ctrl', 'Shift'], key: '8' }],
 			icon: "duplicate-glyph",
 			callback: () => {
 				new InsertCommandIdModel(this.app).open();
