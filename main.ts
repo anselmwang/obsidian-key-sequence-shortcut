@@ -6,29 +6,22 @@ interface KeyItem {
 	command: string;
 }
 
-const ALL_KEY_ITEMS = [
-	{
-		key_sequence: "tb",
-		command: "editor:toggle-bullet-list",
-	},
-];
+let g_all_key_items: KeyItem[] = [];
 
 export class KeySequenceModal extends SuggestModal<KeyItem> {
 	// Returns all available suggestions.
 	getSuggestions(query: string): KeyItem[] {
-		const result = ALL_KEY_ITEMS.find((key_item) => {
+		const result = g_all_key_items.find((key_item) => {
 			return key_item.key_sequence == query;
 		})
 
-		if (result != null)
-		{
+		if (result != null) {
 			this.execute(result);
 			this.close();
-		} else {
-			return ALL_KEY_ITEMS.filter((key_item) =>
-				key_item.key_sequence.startsWith(query)
-			);
-		}
+		} 
+		return g_all_key_items.filter((key_item) =>
+			key_item.key_sequence.startsWith(query)
+		);
 	}
 
 	// Renders each suggestion item.
@@ -41,8 +34,7 @@ export class KeySequenceModal extends SuggestModal<KeyItem> {
 		this.execute(key_item);
 	}
 
-	execute(key_item: KeyItem)
-	{
+	execute(key_item: KeyItem) {
 		console.log(`Execute ${key_item.key_sequence}: ${key_item.command}`);
 		(this.app as any).commands.executeCommandById(key_item.command);
 	}
@@ -71,30 +63,71 @@ export class InsertCommandIdModel extends FuzzySuggestModal<Command> {
 	}
 }
 
+const PLUGIN_NAME = "obsidian-key-sequence-shortcut"
+const KSSRC_FILE_PATH = ".obsidian.kssrc"
+const DEFAULT_KSSRC_FILE_PATH = `.obsidian/plugins/${PLUGIN_NAME}/.obsidian.kssrc.default`
+
 export default class KeySequenceShortcutPlugin extends Plugin {
+	readKssInit(kss_config: string) {
+		g_all_key_items = [];
+		kss_config.split("\n").forEach(
+			(line: string, index: number) => {
+				line =line.trim();
+				if (line.length > 0 && line[0] != '#') {
+					const split = line.split(" ");
+					if(split.length != 2)
+					{
+						console.log(`Skip line ${index} "${line}": Doesn't contain two fields.`)
+						return
+					}
+					// FIXME: We can't check when loading the plugin, at this time, the commands list is not complete
+					// if(! (split[1] in (this.app as any).commands.commands))
+					// {
+					// 	console.log(`Skip line ${index} "${line}": ${split[1]} is not a valid command id.`);
+					// 	return
+					// }
+					g_all_key_items.push({key_sequence: split[0], command: split[1]});
+				}
+			}
+		)
+	}
+
 	async onload() {
-		this.addCommand({
-			id: 'open-key-sequence-palette',
-			name: 'Open Key Sequence Palette (Menu)',
-			icon: 'any-key',
-			hotkeys: [{ modifiers: ['Ctrl'], key: 'm' }],
-			callback: () => {
-				new KeySequenceModal(this.app).open();
-			}
-		});
+		
+		if(! await this.app.vault.adapter.exists(KSSRC_FILE_PATH))
+		{
+			this.app.vault.adapter.copy(DEFAULT_KSSRC_FILE_PATH, KSSRC_FILE_PATH);
+		}
+
+		this.app.vault.adapter.read(KSSRC_FILE_PATH).
+			then((lines) => this.readKssInit(lines)).
+			catch(error => { console.log('Error loading kssrc file', KSSRC_FILE_PATH, 'from the vault root', error) });
 
 		this.addCommand({
-			id: 'insert-command-id',
-			name: 'Insert Command Id',
-			callback: () => {
-				new InsertCommandIdModel(this.app).open();
-			}
-		});
-		console.log("KeySequenceShortcutPlugin load successfully.")
+		id: 'open-key-sequence-palette',
+		name: 'Open Key Sequence Palette (Menu)',
+		icon: 'any-key',
+		hotkeys: [{ modifiers: ['Ctrl'], key: 'm' }],
+		callback: () => {
+			new KeySequenceModal(this.app).open();
+		}
+	});
+
+this.addCommand({
+	id: 'insert-command-id',
+	name: 'Insert Command Id',
+	callback: () => {
+		new InsertCommandIdModel(this.app).open();
+	}
+});
+
+
+
+console.log("KeySequenceShortcutPlugin load successfully.")
 	}
 
-	onunload() {
+onunload() {
 
-	}
+}
 
 }
