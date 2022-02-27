@@ -50,8 +50,8 @@ export class KeySequenceModal extends SuggestModal<KeyItem> {
 		})
 
 		if (result != null) {
-			this.execute(result);
 			this.close();
+			this.delay(100).then(data => {this.execute(result);} )
 		}
 		return g_all_key_items.filter((key_item) =>
 			key_item.key_sequence.startsWith(query)
@@ -71,6 +71,10 @@ export class KeySequenceModal extends SuggestModal<KeyItem> {
 	execute(key_item: KeyItem) {
 		console.log(`Execute ${key_item.key_sequence}: ${key_item.command}`);
 		(this.app as any).commands.executeCommandById(key_item.command);
+	}
+
+	async delay(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
 	}
 }
 
