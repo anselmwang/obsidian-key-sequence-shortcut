@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-key-sequence-shortcut",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": " Execute obsidian commands with short key sequences. For example, 'tp' for 'Toggle Preview' and 'tb' for 'Toggle Sidebar'. Easier to remember.",
 	"main": "main.js",
 	"scripts": {
