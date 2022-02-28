@@ -26,9 +26,7 @@ Install by search "Key Sequence Shortcut" in Obsidian "Commnuity plugins" option
 
 ```
 " p for project
-
-" comment because when used in mobile, the input control is not focused
-" pf darlal-switcher-plus:switcher-plus:open
+pf darlal-switcher-plus:switcher-plus:open
 
 " x for text
 xh editor:set-heading
@@ -37,15 +35,18 @@ xc editor:toggle-checklist-status
 xq editor:toggle-blockquote
 xw editor:insert-wikilink
 xe editor:insert-embed
-xi obsidian-outliner:indent-list
-xu obsidian-outliner:outdent-list
+xi editor:indent-list
+xu editor:unindent-list
 
 " xx for refactor
 xxh editor:rename-heading
 
 " e for editor
-em obsidian-advanced-selection:set-mark
-es obsidian-advanced-selection:select-from-mark
+em obsidian-mark-and-select:set-mark
+es obsidian-mark-and-select:select-from-mark
+" following two commands only available on mobile
+er editor:redo
+eu editor:undo
 ```
 
 # Acknowledgement
