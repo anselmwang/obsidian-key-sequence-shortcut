@@ -111,7 +111,7 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 			(line: string, index: number) => {
 				line = line.trim();
 				if (line.length > 0 && line[0] != '"') {
-					const split = line.split(" ");
+					const split = line.split("\t");
 					if (split.length != 2) {
 						console.log(`Skip line ${index} "${line}": Doesn't contain two fields.`)
 						return
