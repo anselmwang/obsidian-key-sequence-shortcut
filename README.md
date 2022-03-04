@@ -18,7 +18,7 @@ Install by search "Key Sequence Shortcut" in Obsidian "Commnuity plugins" option
   - The default configuration file is "kssrc.md" at workspace root folder. Can be customized.
   - Double quote to start a comment line
   - key sequence and command id are splitted by a single tab character
-  - Easy to find command id by command "Insert Command Id" (bind to `Ctrl-*`)
+  - Easy to find command id by command "Insert Command Id and Name" (bind to `Ctrl-*`)
   - `Key Sequence Shortcut` will run corresponding command as long at user input matches any configuration item, so "xh" will hide key sequences like "xha", "xhb". Please avoid to have one key sequence to be the prefix of other key sequences.
 - Run command "Reload Key Sequence Shortcut Config File" to reload after configuration file change
 
@@ -26,7 +26,7 @@ Install by search "Key Sequence Shortcut" in Obsidian "Commnuity plugins" option
 
 ```
 " p for project
-pf	darlal-switcher-plus:switcher-plus:open
+pf	darlal-switcher-plus:switcher-plus:open	"Quick Switcher++: Open"
 
 " x for text
 xh	editor:set-heading
