@@ -38,6 +38,7 @@ export class KeySequenceShortcutSettingTab extends PluginSettingTab {
 interface KeyItem {
 	key_sequence: string;
 	command: string;
+	description: string,
 }
 
 let g_all_key_items: KeyItem[] = [];
@@ -60,7 +61,7 @@ export class KeySequenceModal extends SuggestModal<KeyItem> {
 
 	// Renders each suggestion item.
 	renderSuggestion(key_item: KeyItem, el: HTMLElement) {
-		el.createEl("div", { text: key_item.key_sequence + ": " + key_item.command });
+		el.createEl("div", { text: key_item.key_sequence + ": " + (key_item.description == "" ? key_item.command : key_item.description) });
 	}
 
 	// Perform action on the selected suggestion.
@@ -93,7 +94,7 @@ export class InsertCommandIdModel extends FuzzySuggestModal<Command> {
 		if (view) {
 			const editor = view.editor;
 			const pos = editor.getCursor();
-			editor.replaceRange(item.id, pos);
+			editor.replaceRange(`${item.id}\t${item.name}`, pos);
 			pos.ch += item.id.length;
 			editor.setCursor(pos);
 		}
@@ -112,8 +113,8 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 				line = line.trim();
 				if (line.length > 0 && line[0] != '"') {
 					const split = line.split("\t");
-					if (split.length != 2) {
-						console.log(`Skip line ${index} "${line}": Doesn't contain two fields.`)
+					if ((split.length != 2) && (split.length != 3) ) {
+						console.log(`Skip line ${index} "${line}": the format should be "key-sequence<TAB>command-id<TAB>description", the last field "description" is optional.`)
 						return
 					}
 					// FIXME: We can't check when loading the plugin, at this time, the commands list is not complete
@@ -122,7 +123,8 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 					// 	console.log(`Skip line ${index} "${line}": ${split[1]} is not a valid command id.`);
 					// 	return
 					// }
-					g_all_key_items.push({ key_sequence: split[0], command: split[1] });
+					const key_item: KeyItem = { key_sequence: split[0], command: split[1],  description: split.length == 3 ? split[2] : ""}
+					g_all_key_items.push(key_item);
 				}
 			}
 		)
@@ -145,7 +147,7 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'insert-command-id',
-			name: 'Insert Command Id',
+			name: 'Insert Command Id and Name',
 			hotkeys: [{ modifiers: ['Ctrl', 'Shift'], key: '8' }],
 			icon: "duplicate-glyph",
 			callback: () => {
