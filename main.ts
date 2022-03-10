@@ -159,8 +159,8 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 			id: 'reload-kssrc',
 			name: 'Reload Key Sequence Shortcut Config File',
 			icon: "play-audio-glyph",
-			callback: () => {
-				this.load_kssrc_file();
+			callback: async () => {
+				await this.load_kssrc_file();
 			}
 		});
 		this.settingTab = new KeySequenceShortcutSettingTab(this.app, this);
@@ -168,10 +168,14 @@ export default class KeySequenceShortcutPlugin extends Plugin {
 		console.log("KeySequenceShortcutPlugin load successfully.")
 	}
 
-	private load_kssrc_file() {
-		this.app.vault.adapter.read(this.settings.kssrc_file_path).
-			then((lines) => this.readKssInit(lines)).
-			catch(error => { console.log('Error loading kssrc file', this.settings.kssrc_file_path, 'from the vault root', error); });
+	private async load_kssrc_file() {
+		try {
+			const lines = await this.app.vault.adapter.read(this.settings.kssrc_file_path);
+			this.readKssInit(lines);
+		} catch (error)
+		{ 
+			console.log('Error loading kssrc file', this.settings.kssrc_file_path, 'from the vault root', error); 
+		}
 	}
 
 	async loadSettings() {
