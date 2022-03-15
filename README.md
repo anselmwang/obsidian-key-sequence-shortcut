@@ -16,9 +16,9 @@ Install by search "Key Sequence Shortcut" in Obsidian "Commnuity plugins" option
 ![](attachments/2022-02-26-07-33-19.png)
 - Configuration
   - The default configuration file is "kssrc.md" at workspace root folder. Can be customized.
-  - Double quote to start a comment line
-  - key sequence and command id are splitted by a single tab character
-  - Easy to find command id by command "Insert Command Id and Name" (bind to `Ctrl-*`)
+    - Comment line: use double quote to start a comment line
+    - Normal line: key-sequence&lt;TAB&gt;command-id&lt;TAB&gt;description. The last part "&lt;TAB&gt;description" is optional.
+  - We can easily find command id by running command "Insert Command Id and Name" (bind to `Ctrl-*`)
   - `Key Sequence Shortcut` will run corresponding command as long at user input matches any configuration item, so "xh" will hide key sequences like "xha", "xhb". Please avoid to have one key sequence to be the prefix of other key sequences.
 - Run command "Reload Key Sequence Shortcut Config File" to reload after configuration file change
 
