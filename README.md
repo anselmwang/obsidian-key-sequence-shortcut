@@ -52,6 +52,24 @@ er	editor:redo
 eu	editor:undo
 ```
 
+# Compare with similar plugins
+
+**Key sequence shortcut** 
+- Type Ctrl-M to trigger, then support character sequence like "phw" as hotkey.
+- Auto command suggestion to help memorize
+- text based configuration
+
+**Sequence hotkeys** , **Hotkeys chords**
+- support arbitrary hotkey sequences, so you can use key sequence like "Alt-b Ctrl-a p h w" 
+- No command suggestion
+- UI based configuration
+
+**Chorded hotkeys**
+- Support character sequence as hotkey.
+- Type faster than average to trigger. This triggering method sounds strange to me, I haven't use the plugin in my daily life, not sure how well it works.
+
+
+
 # Acknowledgement
 
 This plugin is inspired by Vim multi-key shortcut and VSpaceCode. Text editing will never been so much fun without such key sequence shortcut.
