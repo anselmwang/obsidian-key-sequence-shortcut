@@ -22,6 +22,9 @@ Install by search "Key Sequence Shortcut" in Obsidian "Commnuity plugins" option
   - `Key Sequence Shortcut` will run corresponding command as long at user input matches any configuration item, so "xh" will hide key sequences like "xha", "xhb". Please avoid to have one key sequence to be the prefix of other key sequences.
 - Run command "Reload Key Sequence Shortcut Config File" to reload after configuration file change
 
+Choosing TAB as the separator is a trade-off. I understand we can't easily enter a TAB in Obsidian, it will indent the line. However, the last column in config file is "description" which can easily contain characters like ";" or "|" or space. Considering this, I still choose TAB. To enter it, I simply type TAB in any other editors (e.g. Notepad on Windows platform) ans paste it into Obsidian.
+
+
 # Configuration example
 
 ```
