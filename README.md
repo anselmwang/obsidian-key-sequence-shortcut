@@ -25,6 +25,44 @@ Install by search "Key Sequence Shortcut" in Obsidian "Commnuity plugins" option
 Choosing TAB as the separator is a trade-off. I understand we can't easily enter a TAB in Obsidian, it will indent the line. However, the last column in config file is "description" which can easily contain characters like ";" or "|" or space. Considering this, I still choose TAB. To enter it, I simply type TAB in any other editors (e.g. Notepad on Windows platform) ans paste it into Obsidian.
 
 
+# Optional input method integration (2.1.0)
+
+Key Sequence Shortcut works on its own, including on mobile. If an enabled,
+compatible [Vim Input Method Memory](https://github.com/anselmwang/obsidian-vim-im-switch-plugin)
+plugin (`vim-input-method-memory`) is available, the palette waits for temporary
+English input before opening. The override stays active while the palette closes
+and dispatches a command, then the input method provider reconciles the current
+editor/focus state. Cancelling or unloading releases only this palette's override.
+
+Availability is checked whenever you open the palette. Missing, disabled,
+outdated, or disposed providers disable **only IME integration**, not the palette
+or commands. A compatible legacy installation with ID
+`obsidian-vim-im-switch-plugin` is also supported; older push/pop-only versions
+are not called. A real preparation failure is reported in a notice and the
+console instead of opening with an unprepared input method.
+
+Key sequence matching, TAB-separated configuration, descriptions, and existing
+hotkeys are unchanged. Exact matches and selected suggestions both execute once,
+after the existing 100 ms editor-focus delay; there is no timed IME restoration.
+
+# Development and release
+
+Use Node.js 22 LTS and run `npm ci`, `npm test`, and `npm run build`.
+Tests bundle the maintained TypeScript into memory and exercise the lifecycle
+with an Obsidian mock and deterministic timers; no vault or native IME helper is
+required. The production build generates `main.js` without a source map.
+Run `node tests/lifecycle.cjs --release` after building to exercise that exact
+release bundle with the same tests.
+
+For an existing Community Plugins listing, merge the reviewed source first,
+then publish a GitHub release whose tag exactly matches the default branch's
+`manifest.json` version (for example `2.1.0`, without a `v` prefix). Attach the
+built `main.js` and matching `manifest.json`; this plugin has no `styles.css`.
+Keep `package.json`, `package-lock.json`, `manifest.json`, and `versions.json`
+in sync. Include the changes and optional-provider requirements in the release
+notes so readers can see what changed; notification delivery depends on their
+GitHub subscription settings.
+
 # Configuration example
 
 ```
@@ -79,4 +117,3 @@ In the Obsidian world, I love vimrc-support plugin so much and I am using it lit
 - On Obsidian Mobile (I have too many buttons in Mobile toolbar!)
 - On desktop
   - When I switch to Markdown preview mode, I lose the VIM editor mode and can't switch back with key sequence.
-
